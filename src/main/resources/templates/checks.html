@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<link rel="stylesheet" th:href="@{/css/checks.css}" href="../../css/checks.css"/>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
+
+<head>
+    <title>Git Branches Protection</title>
+    <script>
+        $(document).on('click', '.panel-heading span.clickable', function(e){
+            var $this = $(this);
+	        if(!$this.hasClass('panel-collapsed')) {
+		        $this.parents('.panel').find('.panel-body').slideUp();
+		        $this.addClass('panel-collapsed');
+		        $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+	        } else {
+		        $this.parents('.panel').find('.panel-body').slideDown();
+		        $this.removeClass('panel-collapsed');
+		        $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+	        }
+        });
+
+        $(document).on('click', '#collapseAll', function(e){
+		    $('.panel.panel-info').find('.panel-body').slideUp();
+		    $('span.clickable').addClass('panel-collapsed');
+		    $('span.clickable').find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        });
+
+
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <h2>List of Teamcity Projects</h2>
+        </div>
+        <div class="col-md-2">
+            <button id="collapseAll" type="button" class="btn btn-defauls">Collapse All</button>
+        </div>
+    </div>
+    <div class="row">
+        <div th:each="project : ${projects}" class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title" th:text="${{project.name}}"></h3>
+                <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Build name</th>
+                        <th width="20%">Build status</th>
+                        <th width="10%"/>
+                        <th width="10%"/>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                            th:each="build : ${builds}"
+                            th:if="${build.projectId} == ${project.id}"
+                            th:class="${{build.status.toString()}}">
+                        <td th:text="${{build.name}}"/>
+                        <td th:text="${{build.status}}"/>
+                        <td>
+                            <button type="button" class="btn btn-success">Merge</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-warning">Update</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
